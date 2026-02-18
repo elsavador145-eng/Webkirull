@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday </title>
+
+<style>
+body{
+margin:0;
+font-family:Arial, sans-serif;
+text-align:center;
+color:white;
+overflow-x:hidden;
+background: linear-gradient(-45deg,#ff0080,#ff4da6,#ff99cc,#ff1a8c,#ff66cc);
+background-size:400% 400%;
+animation: gradientBG 12s ease infinite;
+}
+
+@keyframes gradientBG{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+@keyframes shake{
+0%{transform:translateX(0);}
+25%{transform:translateX(-10px);}
+50%{transform:translateX(10px);}
+75%{transform:translateX(-10px);}
+100%{transform:translateX(0);}
+}
+
+.container{padding:30px;}
+
+h1{font-size:50px;text-shadow:0 0 20px white;}
+
+.question{
+font-size:28px;
+margin:25px 0;
+font-weight:bold;
+text-shadow:2px 2px 8px black;
+}
+
+button{
+padding:15px 30px;
+font-size:20px;
+border:none;
+border-radius:20px;
+background:white;
+color:#ff1493;
+margin:10px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+button:hover{transform:scale(1.1);}
+
+.hidden{display:none;}
+
+.result-text{
+font-size:30px;
+margin:15px 0;
+font-weight:bold;
+text-shadow:2px 2px 8px black;
+}
+
+.big-score{
+font-size:70px;
+color:yellow;
+text-shadow:0 0 25px white;
+}
+
+#preview{
+margin-top:20px;
+max-width:200px;
+border-radius:20px;
+box-shadow:0 0 20px white;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="clap" src="https://www.soundjay.com/human/applause-8.mp3"></audio>
+
+<div class="container">
+
+<h1>HAPPY BIRTHDAY🥳🥳</h1>
+
+<div id="startSection">
+<div class="question">Masukkan nama kamu</div>
+<input type="text" id="nama">
+<br><br>
+<button onclick="startQuiz()">Mulai</button>
+</div>
+
+<div id="quizSection" class="hidden"></div>
+
+<div id="uploadSection" class="hidden">
+<div class="question">Unggah foto apapun disini</div>
+<input type="file" onchange="previewImage(event)">
+<br>
+<img id="preview" class="hidden">
+<br><br>
+<button onclick="showFinal()">Lihat Hasil</button>
+</div>
+
+<div id="passwordSection" class="hidden">
+<div class="question">Masukkan Password Rahasia</div>
+<input type="password" id="pass">
+<br><br>
+<button onclick="checkPassword()">Buka Hasil</button>
+</div>
+
+<div id="finalSection" class="hidden"></div>
+
+</div>
+
+<script>
+let score=0;
+let current=0;
+let nomorWA="6285250150862";
+const PASSWORD="772913";
+
+// Quiz dengan jawaban benar sesuai request
+const questions=[
+{q:"1. Apa makanan favorit?",a:["seblak","mie ayam","bakso"],correct:0}, // seblak
+{q:"2. Warna favorit?",a:["biru","pink","hitam"],correct:1}, // pink
+{q:"3. Hobi kamu?",a:["badminton","bola","running"],correct:0}, // badminton
+{q:"4. Guru favorit?",a:["eris Suhendra","reki","Khairul"],correct:2}, // khairul
+{q:"5. Cita-cita?",a:["pengusaha muda","dokter","guru"],correct:1}, // dokter
+{q:"6. Paling suka hari apa?",a:["Minggu","Jum'at","Senin"],correct:0}, // minggu
+{q:"7. Minuman favorit?",a:["Macha","Boba","ultra milk"],correct:2}, // ultra milk
+{q:"8. Siapa pertama ngucapin ulang tahun?",a:["pembuat web ini","ibu","teman dekat"],correct:0}, // pembuat web ini
+{q:"9. 6 x 5 ?",a:["15","45","30"],correct:2}, // 30
+{q:"10. 3x+6=12 maka x=?",a:["3","4","6"],correct:0} // 3
+];
+
+function startQuiz(){
+document.getElementById("startSection").classList.add("hidden");
+document.getElementById("quizSection").classList.remove("hidden");
+showQuestion();
+}
+
+function showQuestion(){
+if(current>=questions.length){
+document.getElementById("quizSection").classList.add("hidden");
+document.getElementById("uploadSection").classList.remove("hidden");
+return;
+}
+let q=questions[current];
+let html=`<div class="question">${q.q}</div>`;
+q.a.forEach((opt,i)=>{
+html+=`<button onclick="answer(${i})">${opt}</button><br>`;
+});
+document.getElementById("quizSection").innerHTML=html;
+}
+
+function answer(i){
+if(i===questions[current].correct){score++;}
+current++;
+showQuestion();
+}
+
+function previewImage(event){
+let reader=new FileReader();
+reader.onload=function(){
+let img=document.getElementById("preview");
+img.src=reader.result;
+img.classList.remove("hidden");
+}
+reader.readAsDataURL(event.target.files[0]);
+}
+
+function showFinal(){
+document.getElementById("uploadSection").classList.add("hidden");
+document.getElementById("passwordSection").classList.remove("hidden");
+}
+
+function checkPassword(){
+if(document.getElementById("pass").value===PASSWORD){
+document.getElementById("passwordSection").classList.add("hidden");
+displayResult();
+}else{
+alert("Password salah 😈");
+}
+}
+
+function displayResult(){
+document.getElementById("finalSection").classList.remove("hidden");
+let nama=document.getElementById("nama").value;
+let nilai100=score*10;
+
+let pesanPrank = score<5 ? 
+"WKWK KAMU KURANG KENAL NIH 😜" :
+"KAMU SAHABAT TERBAIK 💖";
+
+document.getElementById("finalSection").innerHTML=`
+<div class="result-text">${pesanPrank}</div>
+<div class="result-text">Selamat Ulang Tahun ${nama.toUpperCase()}</div>
+<div class="result-text">Skor kamu ${score}/10</div>
+<div class="result-text big-score">${nilai100}/100</div>
+<br>
+<div class="result-text">Mengirim ke WhatsApp dalam 3 detik...</div>
+`;
+
+if(nilai100===100){
+document.body.style.animation="shake 0.5s";
+document.getElementById("clap").play();
+createConfetti();
+}
+
+// AUTO KIRIM WA 3 DETIK
+setTimeout(()=>{
+kirimWA(nama,score,nilai100);
+},3000);
+}
+
+function kirimWA(nama,score,nilai100){
+let pesan=`Halo! 🎉
+Nama: ${nama}
+Skor: ${score}/10
+Nilai: ${nilai100}/100
+Mode: Birthday Legend 🔥`;
+
+window.location.href="https://wa.me/"+nomorWA+"?text="+encodeURIComponent(pesan);
+}
+
+function createConfetti(){
+for(let i=0;i<300;i++){
+let conf=document.createElement("div");
+conf.style.position="fixed";
+conf.style.width="8px";
+conf.style.height="8px";
+conf.style.background="hsl("+Math.random()*360+",100%,50%)";
+conf.style.top="-10px";
+conf.style.left=Math.random()*window.innerWidth+"px";
+conf.style.borderRadius="50%";
+document.body.appendChild(conf);
+
+let fall=setInterval(()=>{
+conf.style.top=parseInt(conf.style.top)+7+"px";
+if(parseInt(conf.style.top)>window.innerHeight){
+clearInterval(fall);
+conf.remove();
+}
+},20);
+}
+}
+</script>
+
+</body>
+</html>
